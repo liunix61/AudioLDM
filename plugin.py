@@ -18,13 +18,6 @@ class AudioLDMPlugin(TuneflowPlugin):
         return 'audioldm-generate'
 
     @staticmethod
-    def provider_display_name() -> LabelText:
-        return {
-            "zh": "Andantei行板",
-            "en": "Andantei"
-        }
-
-    @staticmethod
     def params(song: Song) -> Dict[str, ParamDescriptor]:
         return {
             "prompt": {
