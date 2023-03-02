@@ -2,13 +2,17 @@
 
 Fork of https://github.com/haoheliu/AudioLDM as a TuneFlow Plugin
 
+<img src="./images/audioldm_cn.gif" width="500" />
+
 ## Usage
 
 > **Note:** It is highly recommended to create a venv to run this plugin.
 
 Steps to run the plugin:
 
-1. Install dependencies using:
+0. Install **TuneFlow Desktop** by downloading the app from https://tuneflow.com
+
+1. Clone this repo, and install dependencies using:
 
 ```bash
 pip install -r requirements.txt
