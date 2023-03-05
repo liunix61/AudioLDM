@@ -1,4 +1,4 @@
-from tuneflow_py import TuneflowPlugin, ParamDescriptor, Song, TrackType, WidgetType, LabelText
+from tuneflow_py import TuneflowPlugin, ParamDescriptor, Song, TrackType, WidgetType, InjectSource
 from typing import Dict, Any
 from audioldm import text_to_audio, build_model
 from pathlib import Path
@@ -75,7 +75,7 @@ class AudioLDMPlugin(TuneflowPlugin):
                     }
                 }
             },
-            "randomSeed": {
+            "random_seed": {
                 "displayName": {
                     "en": "Random Seed",
                     "zh": "随机因子"
@@ -93,7 +93,19 @@ class AudioLDMPlugin(TuneflowPlugin):
                         "step": 1
                     }
                 }
-            }
+            },
+            "playhead_tick": {
+                "displayName": {
+                    "zh": '当前指针位置',
+                    "en": 'Playhead Position',
+                },
+                "defaultValue": None,
+                "widget": {
+                    "type": WidgetType.InputNumber.value,
+                },
+                "hidden": True,
+                "injectFrom": InjectSource.TickAtPlayheadSnappedToBeat.value,
+            },
         }
 
     @staticmethod
@@ -107,7 +119,7 @@ class AudioLDMPlugin(TuneflowPlugin):
             duration=params["duration"],
             guidance_scale=params["guidance_scale"],
             # Randomize seed.
-            random_seed=params["randomSeed"])
+            random_seed=params["random_seed"])
         for file_bytes in file_bytes_list:
             try:
                 file_bytes.seek(0)
@@ -118,7 +130,7 @@ class AudioLDMPlugin(TuneflowPlugin):
                         "data": file_bytes.read()
                     },
                     "duration": params["duration"],
-                    "start_tick": 0
+                    "start_tick": params["playhead_tick"]
                 })
             except:
                 print(traceback.format_exc())
