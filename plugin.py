@@ -1,4 +1,4 @@
-from tuneflow_py import TuneflowPlugin, ParamDescriptor, Song, TrackType, WidgetType, InjectSource
+from tuneflow_py import TuneflowPlugin, ParamDescriptor, Song, WidgetType, InjectSource, TuneflowPluginTriggerData
 from typing import Dict, Any
 from audioldm import text_to_audio, build_model
 from pathlib import Path
@@ -110,6 +110,11 @@ class AudioLDMPlugin(TuneflowPlugin):
 
     @staticmethod
     def run(song: Song, params: Dict[str, Any]):
+        trigger: TuneflowPluginTriggerData = params["trigger"]
+        track_id =trigger["entities"][0]["trackId"]
+        track = song.get_track_by_id(track_id=track_id)
+        if track is None:
+            raise Exception('track not found')
         model_path = str(Path(__file__).parent.joinpath('ckpt/ldm_trimmed.ckpt').absolute())
         model = build_model(ckpt_path=model_path)
         # TODO: Support prompt i18n
@@ -123,7 +128,6 @@ class AudioLDMPlugin(TuneflowPlugin):
         for file_bytes in file_bytes_list:
             try:
                 file_bytes.seek(0)
-                track = song.create_track(type=TrackType.AUDIO_TRACK)
                 track.create_audio_clip(clip_start_tick=0, audio_clip_data={
                     "audio_data": {
                         "format": "wav",
@@ -132,6 +136,7 @@ class AudioLDMPlugin(TuneflowPlugin):
                     "duration": params["duration"],
                     "start_tick": params["playhead_tick"]
                 })
+                break
             except:
                 print(traceback.format_exc())
 
