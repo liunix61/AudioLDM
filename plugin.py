@@ -7,6 +7,8 @@ from io import BytesIO
 import soundfile as sf
 from typing import List
 
+model_path = str(Path(__file__).parent.joinpath('ckpt/ldm_trimmed.ckpt').absolute())
+model = build_model(ckpt_path=model_path)
 
 class AudioLDMPlugin(TuneflowPlugin):
     @staticmethod
@@ -115,8 +117,6 @@ class AudioLDMPlugin(TuneflowPlugin):
         track = song.get_track_by_id(track_id=track_id)
         if track is None:
             raise Exception('track not found')
-        model_path = str(Path(__file__).parent.joinpath('ckpt/ldm_trimmed.ckpt').absolute())
-        model = build_model(ckpt_path=model_path)
         # TODO: Support prompt i18n
         file_bytes_list = AudioLDMPlugin._text2audio(
             model,
